@@ -28,7 +28,7 @@ let
       ...
     }:
     lib.mkIf cfg.enable {
-      nix.package = inputs.nix.packages."${pkgs.stdenv.system}".default;
+      nix.package = inputs.patchedNixPackages.${pkgs.stdenv.system};
 
       nix.registry.nixpkgs = {
         exact = true;

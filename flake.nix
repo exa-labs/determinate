@@ -42,6 +42,24 @@
             };
           }
         );
+
+      # Exa eval-performance patches ported from exa-labs/nix.
+      # Applied via nix-src's built-in appendPatches mechanism so every
+      # component (libstore, libutil, libexpr, nix-cli) is rebuilt from
+      # the patched source tree.
+      exaEvalPatches = [
+        ./patches/001-checkname-lookup-table.patch
+        ./patches/002-nix32-presized-write.patch
+        ./patches/003-base16-hex-table.patch
+        ./patches/004-printstring-scan-and-copy.patch
+        ./patches/005-gc-free-space-divisor.patch
+        ./patches/006-eval-cache-fast-path.patch
+      ];
+
+      # Patched nix package per system.
+      patchedNixPackages = forEachSupportedSystem (
+        { system, ... }: inputs.nix.packages.${system}.default.appendPatches exaEvalPatches
+      );
     in
     {
       packages = forEachSupportedSystem (
@@ -92,6 +110,6 @@
 
       homeManagerModules.default = ./modules/home-manager/default.nix;
 
-      nixosModules.default = import ./modules/nixos.nix inputs;
+      nixosModules.default = import ./modules/nixos.nix (inputs // { inherit patchedNixPackages; });
     };
 }
