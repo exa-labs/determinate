@@ -65,6 +65,8 @@
       packages = forEachSupportedSystem (
         { system, pkgs, ... }:
         {
+          nix-exa-patched = patchedNixPackages.${system};
+
           default = pkgs.stdenvNoCC.mkDerivation {
             pname = "determinate-nixd";
             inherit (inputs.nix.packages.${system}.default) version;
