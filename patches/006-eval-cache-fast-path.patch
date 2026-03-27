@@ -30,10 +30,10 @@
 +                    return &b.drvPath->getBaseStorePath();
 +                },
 +                [&](const NixStringContextElem::Opaque & o) -> const StorePath * { return &o.path; },
-+                [&](const NixStringContextElem::Path & p) -> const StorePath * { return nullptr; },
++                [&](const NixStringContextElem::Path & p) -> const StorePath * { return &p.path; },
 +            },
 +            c.raw);
-+        if (!path || !root->state.store->isValidPath(*path))
++        if (path && !root->state.store->isValidPath(*path))
 +            return std::nullopt;
 +    }
 +
